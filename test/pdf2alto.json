@@ -1,0 +1,6 @@
+{
+    "type": "pdf",
+    "params": {
+        "task":"pdf2alto"
+    }
+}
