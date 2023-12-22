@@ -89,7 +89,7 @@ var server = app.listen(set_port, function () {
    var host = server.address().address
    var port = server.address().port
 
-   console.log('md-poppler running at http://%s:%s', host, port)
+   console.log('md-pdfalto running at http://%s:%s', host, port)
 })
 
 
