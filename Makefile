@@ -1,24 +1,29 @@
 IMAGES := $(shell docker images -f "dangling=true" -q)
 CONTAINERS := $(shell docker ps -a -q -f status=exited)
-IMAGE := md-pdfalto
 VOLUME := md-pdfalto-data
-PWD=$(shell pwd)
+VERSION := 0.1
+REPOSITORY := osc.jyu.fi
+IMAGE := md-pdfalto
 
-create_volume:
-	docker volume create $(VOLUME)
-
-build:
-	docker build -t artturimatias/$(IMAGE) .
-
-start:
-	docker run -d --name md-pdfalto \
-		-v $(VOLUME):/src/data \
-		-p 8100:8300 \
-		--restart unless-stopped \
-		artturimatias/$(IMAGE)
 
 clean:
 	docker rm -f $(CONTAINERS)
 	docker rmi -f $(IMAGES)
 
+build:
+	docker build -t $(REPOSITORY)/messydesk/$(IMAGE):$(VERSION) .
 
+start:
+	docker run -d --name $(IMAGE) \
+		-v $(VOLUME):/logs \
+		-p 8100:8300 \
+		--restart unless-stopped \
+		$(REPOSITORY)/messydesk/$(IMAGE):$(VERSION)
+
+restart:
+	docker stop $(IMAGE)
+	docker rm $(IMAGE)
+	$(MAKE) start
+
+bash:
+	docker exec -it $(IMAGE) bash
