@@ -44,17 +44,18 @@ router.post('/process', upload.fields([
 
     try {
         var dirname = uuidv4()
-
         await fs.mkdir(path.join('data', dirname))
-        var request = await fs.readFile(requestFilepath)
-        var requestJSON = JSON.parse(request)
-        console.log(requestJSON)
+
+	var requestJSON = await fs.readJSON(requestFilepath, 'utf-8')
+	if(typeof requestJSON === 'string')
+            requestJSON = JSON.parse(requestJSON)
+	console.log(requestJSON.params)
         const task = requestJSON.params.task
         delete requestJSON.params.task
     
         if(task == 'pdf2alto') {
             await execPromise(`./pdfalto ${contentFilepath} data/${dirname}/alto.xml`)
-            output.response.uri = [`files/${dirname}/alto.xml`]
+            output.response.uri = [`/files/${dirname}/alto.xml`]
         } 
 
         await fs.unlink(contentFilepath)
@@ -84,7 +85,7 @@ router.get('/files/:dir/:file', async function (ctx) {
 
 app.use(router.routes());
 
-var set_port = process.env.PORT || 8300
+var set_port = process.env.PORT || 8500
 var server = app.listen(set_port, function () {
    var host = server.address().address
    var port = server.address().port

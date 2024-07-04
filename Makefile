@@ -16,7 +16,7 @@ build:
 start:
 	docker run -d --name $(IMAGE) \
 		-v $(VOLUME):/logs \
-		-p 8100:8300 \
+		-p 8500:8500 \
 		--restart unless-stopped \
 		$(REPOSITORY)/messydesk/$(IMAGE):$(VERSION)
 
